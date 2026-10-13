@@ -31,15 +31,28 @@ end
 local gameData = playdate.datastore.read()
 
 function clearSaveData()
-    gfx.drawText("Warning: This will reset all game progress. Are you sure you", 200, 120)
-    
+    playdate.stop()
+    gfx.clear()
+    gfx.drawText("Warning: This will reset all game progress.", 30, 120)
+    gfx.drawText("Are you sure?", 30, 140)
+
+    function playdate.AButtonDown()
+        revolutions = 0
+        gameData = {
+            currentRevolutions = revolutions
+        }
+        playdate.datastore.write(gameData)
+        playdate.start()
+    end
+        
+    function playdate.BButtonDown()
+        playdate.start()
+    end
 end
 
 function gameSetup()
     local menu = playdate.getSystemMenu()
-    local menuItem, error = menu:addMenuItem("New Game", function()
-    print("New game")
-end)
+    local menuItem, error = menu:addMenuItem("New Game", clearSaveData)
 
     if gameData then
         revolutions = gameData.currentRevolutions
